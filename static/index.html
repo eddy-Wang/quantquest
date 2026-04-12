@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>量化因子学院 · QuantQuest</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Microsoft Yahei", sans-serif; }
+  .glow { box-shadow: 0 0 24px rgba(99,102,241,0.35); }
+  .card { transition: all .2s; }
+  .card:hover { transform: translateY(-2px); }
+  .badge { animation: pop .4s ease; }
+  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .nav-btn.active { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: white; }
+  .xp-bar { background: linear-gradient(90deg,#fbbf24,#f97316); }
+  pre { white-space: pre-wrap; }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+<!-- 顶栏 -->
+<header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+    <div class="text-2xl">🧪</div>
+    <div>
+      <div class="font-bold text-lg">QuantQuest · 量化因子学院</div>
+      <div class="text-xs text-slate-400">从 0 学懂量化因子，并亲手算一遍</div>
+    </div>
+    <div class="ml-auto flex items-center gap-3">
+      <div class="text-xs text-slate-400">等级 <span id="level" class="text-amber-400 font-bold">1</span></div>
+      <div class="w-40 h-3 bg-slate-800 rounded-full overflow-hidden">
+        <div id="xpbar" class="h-full xp-bar" style="width:0%"></div>
+      </div>
+      <div class="text-xs"><span id="xp">0</span> XP</div>
+      <div id="badges" class="flex gap-1"></div>
+    </div>
+  </div>
+  <nav class="max-w-6xl mx-auto px-4 pb-3 flex gap-2 text-sm">
+    <button class="nav-btn px-3 py-1.5 rounded-lg bg-slate-800" data-tab="home">🏠 入门</button>
+    <button class="nav-btn px-3 py-1.5 rounded-lg bg-slate-800" data-tab="lessons">📚 闯关课程</button>
+    <button class="nav-btn px-3 py-1.5 rounded-lg bg-slate-800" data-tab="factors">🧬 因子图鉴</button>
+    <button class="nav-btn px-3 py-1.5 rounded-lg bg-slate-800" data-tab="lab">⚗️ 实践工坊</button>
+    <button class="nav-btn px-3 py-1.5 rounded-lg bg-slate-800" data-tab="glossary">📖 术语表</button>
+  </nav>
+</header>
+
+<main class="max-w-6xl mx-auto p-4">
+
+<!-- 入门 -->
+<section id="tab-home" class="tab">
+  <div class="rounded-2xl bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-8 mb-6 glow">
+    <h1 class="text-3xl font-bold mb-2">👋 嗨，未来的量化投资者</h1>
+    <p class="text-slate-300 max-w-2xl">这里把'量化投资'这件事拆成一颗颗能上手的小关卡。看故事 → 答小问题 → 真算一个因子 → 看图判断它有没有用。完成关卡能拿 XP，集齐徽章变成「因子大师」。</p>
+    <div class="mt-4 flex gap-3">
+      <button class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-5 py-2 rounded-lg" onclick="showTab('lessons')">▶ 开始第一关</button>
+      <button class="bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-lg" onclick="showTab('lab')">⚗️ 直接进实验室</button>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-4">
+    <div class="card bg-slate-900 p-5 rounded-xl border border-slate-800">
+      <div class="text-3xl mb-2">📚</div>
+      <div class="font-bold mb-1">5 关闯关课程</div>
+      <div class="text-sm text-slate-400">从'什么是量化'到'回测的陷阱'，每关 1 分钟读完 + 1 道小测验。</div>
+    </div>
+    <div class="card bg-slate-900 p-5 rounded-xl border border-slate-800">
+      <div class="text-3xl mb-2">🧬</div>
+      <div class="font-bold mb-1">8 个经典因子</div>
+      <div class="text-sm text-slate-400">动量、反转、波动、价值、技术…每个都有故事、公式、和真实数据上的表现。</div>
+    </div>
+    <div class="card bg-slate-900 p-5 rounded-xl border border-slate-800">
+      <div class="text-3xl mb-2">⚗️</div>
+      <div class="font-bold mb-1">实践工坊</div>
+      <div class="text-sm text-slate-400">A 股 / 美股真实数据，亲手跑分层回测 + IC 检验，看图理解因子有没有效。</div>
+    </div>
+  </div>
+
+  <div class="mt-6 p-5 bg-slate-900 rounded-xl border border-slate-800">
+    <div class="font-bold mb-2">💡 30 秒速懂"量化因子"</div>
+    <p class="text-slate-300 text-sm leading-relaxed">
+    想象你是个面试官，要从 100 个候选人里挑出未来 1 个月最能干的。你不可能挨个面试，于是你定一个规则——比如"过去 6 个月业绩涨幅"——给每个人打分排序，挑分数最高的几个。这条"规则"就是<b class="text-amber-400">因子</b>。量化投资就是反复检验：<b>哪些规则在历史上真的有效？为什么？还会继续有效吗？</b>
+    </p>
+  </div>
+</section>
+
+<!-- 闯关课程 -->
+<section id="tab-lessons" class="tab hidden">
+  <div id="lessons-list" class="space-y-4"></div>
+</section>
+
+<!-- 因子图鉴 -->
+<section id="tab-factors" class="tab hidden">
+  <div id="factor-grid" class="grid md:grid-cols-2 gap-4"></div>
+</section>
+
+<!-- 实践工坊 -->
+<section id="tab-lab" class="tab hidden">
+  <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 mb-4">
+    <div class="font-bold mb-3">⚗️ 实验配置</div>
+    <div class="grid md:grid-cols-5 gap-3 text-sm">
+      <div>
+        <label class="text-slate-400">市场</label>
+        <select id="lab-market" class="w-full bg-slate-800 rounded px-2 py-1.5 mt-1">
+          <option value="us">🇺🇸 美股 (20 只大盘)</option>
+          <option value="cn">🇨🇳 A 股 (20 只白马)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-slate-400">因子</label>
+        <select id="lab-factor" class="w-full bg-slate-800 rounded px-2 py-1.5 mt-1"></select>
+      </div>
+      <div>
+        <label class="text-slate-400">分组数</label>
+        <select id="lab-groups" class="w-full bg-slate-800 rounded px-2 py-1.5 mt-1">
+          <option>3</option><option selected>5</option><option>10</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-slate-400">调仓周期(日)</label>
+        <select id="lab-hold" class="w-full bg-slate-800 rounded px-2 py-1.5 mt-1">
+          <option>1</option><option selected>5</option><option>10</option><option>20</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-slate-400">未来收益窗口</label>
+        <select id="lab-fwd" class="w-full bg-slate-800 rounded px-2 py-1.5 mt-1">
+          <option>1</option><option selected>5</option><option>10</option><option>20</option>
+        </select>
+      </div>
+    </div>
+    <button id="run-btn" class="mt-4 bg-indigo-500 hover:bg-indigo-400 px-5 py-2 rounded-lg font-bold">🚀 开始计算</button>
+    <span id="lab-status" class="ml-3 text-slate-400 text-sm"></span>
+  </div>
+
+  <div id="lab-result" class="hidden space-y-4">
+    <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+      <div class="font-bold text-lg mb-1" id="r-title"></div>
+      <div class="text-sm text-slate-400 mb-3" id="r-story"></div>
+      <div class="text-xs text-slate-500" id="r-formula"></div>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-3 text-center">
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+        <div class="text-xs text-slate-400">IC 均值</div>
+        <div id="s-icmean" class="text-2xl font-bold mt-1"></div>
+      </div>
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+        <div class="text-xs text-slate-400">IR (IC均值/IC标准差)</div>
+        <div id="s-ir" class="text-2xl font-bold mt-1"></div>
+      </div>
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+        <div class="text-xs text-slate-400">IC>0 比例</div>
+        <div id="s-win" class="text-2xl font-bold mt-1"></div>
+      </div>
+      <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+        <div class="text-xs text-slate-400">截面期数</div>
+        <div id="s-n" class="text-2xl font-bold mt-1"></div>
+      </div>
+    </div>
+
+    <div id="verdict" class="p-4 rounded-xl border"></div>
+
+    <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+      <div class="font-bold mb-2">📈 分层回测净值（这是判断因子有没有用的关键图）</div>
+      <p class="text-xs text-slate-400 mb-2">把所有股票按因子值分组，等权持有。如果 Q1→Q5 单调拉开，因子有效；缠成一团则无效。</p>
+      <div id="chart-nav" style="height:380px"></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+        <div class="font-bold mb-2">🎯 IC 时间序列</div>
+        <p class="text-xs text-slate-400 mb-2">每天的截面相关性。稳定为正/负 → 因子稳定。</p>
+        <div id="chart-ic" style="height:300px"></div>
+      </div>
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+        <div class="font-bold mb-2">📊 因子值分布</div>
+        <p class="text-xs text-slate-400 mb-2">所有股票所有日期的因子取值。</p>
+        <div id="chart-dist" style="height:300px"></div>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 p-5 rounded-xl border border-slate-800">
+      <div class="font-bold mb-2">🔍 最新一天的因子值排名（你今天会买谁？）</div>
+      <div id="snapshot" class="grid md:grid-cols-2 gap-1 text-sm"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 术语表 -->
+<section id="tab-glossary" class="tab hidden">
+  <div id="glossary-list" class="grid md:grid-cols-2 gap-3"></div>
+</section>
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

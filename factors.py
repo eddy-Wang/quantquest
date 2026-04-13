@@ -179,7 +179,7 @@ def quintile_backtest(factor: pd.DataFrame, prices: pd.DataFrame, n_groups: int 
         s = pd.concat(lst).sort_index()
         s = s[~s.index.duplicated(keep="first")]
         out[f"Q{g}"] = (1 + s).cumprod()
-    nav = pd.DataFrame(out).fillna(method="ffill")
+    nav = pd.DataFrame(out).ffill()
 
     # 多空组合
     if "Q1" in nav and f"Q{n_groups}" in nav:

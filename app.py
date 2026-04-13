@@ -99,6 +99,18 @@ def prices(market: str = "us", ticker: str = None):
 
 @app.post("/api/compute")
 def compute(req: ComputeReq):
+    import traceback as _tb
+    try:
+        return _compute_inner(req)
+    except HTTPException:
+        raise
+    except Exception as e:
+        detail = _tb.format_exc()
+        print(detail)
+        raise HTTPException(500, detail=detail)
+
+
+def _compute_inner(req: ComputeReq):
     if req.factor not in FACTOR_REGISTRY:
         raise HTTPException(404, "unknown factor")
     close, volume = get_data(req.market)
